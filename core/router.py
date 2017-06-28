@@ -4,6 +4,7 @@ from configparser import ConfigParser
 from os import path
 import sys
 import re
+import asyncio
 from threading import Thread
 
 Command = namedtuple('Command', ['name', 'arg_func', 'aliases'])

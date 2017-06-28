@@ -23,6 +23,27 @@ class Client(discord.Client):
             d = json.load(json_data)
             json_data.close
             return d
+    
+    """
+    Async wrapper
+    """
+    def run_async(self, callback):
+        f = asyncio.run_coroutine_threadsafe(callback, self.loop)
+
+        try:
+            f.result()
+        except Exception as e:
+            print(e)
+
+    """
+    Bot ready event
+    """
+    async def on_ready(self):
+        self.change_nickname(self.user.id, self.nickname)
+        print("bot is ready!")
 
     async def on_message(self, message):
-        self.router.route(message)
+        if(message.author != self.user):
+            self.router.route(message)
+
+    
