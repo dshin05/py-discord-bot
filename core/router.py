@@ -4,6 +4,7 @@ from configparser import ConfigParser
 from os import path
 import sys
 import re
+import asyncio
 from threading import Thread
 
 Command = namedtuple('Command', ['name', 'arg_func', 'aliases'])
@@ -42,7 +43,7 @@ class Router():
                    args=(args, message)).start()
 
     """
-    Register routes from routes.py
+    Register commands from outside of this class
     """
     @classmethod
     def register_command(cls, name, aliases=None, arg_func=lambda args: args):
