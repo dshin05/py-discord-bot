@@ -18,7 +18,7 @@ class Database():
             (finish_event, workrequest) = self.db_queue.get()
             cur = conn.cursor()
             workrequest(cur)
-            e.set()
+            finish_event.set()
 
     def check_table(self):
         c = self.conn.cursor()
