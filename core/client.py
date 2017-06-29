@@ -2,8 +2,8 @@ import discord
 import asyncio
 import json
 import asyncio
-import sqlite3
 from .router import Router
+from .db import Database
 
 modules = {}
 
@@ -12,15 +12,14 @@ class Client(discord.Client):
         super().__init__()
         
         self.config = self.loadJson()
-        self.db = sqlite3.connect("database.db")
 
         self.prefix = self.config["commands"]["prefix"]
         self.nickname = self.config["client"]["nickname"]
         self.token = self.config["client"]["token"]
 
         self.router = Router(self, self.prefix)
-
-        self.db.connect()
+        self.db = Database("database.db")
+        
         self.run(self.token)
 
     def loadJson(self):
