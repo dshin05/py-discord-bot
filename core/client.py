@@ -4,17 +4,19 @@ import json
 import asyncio
 from .router import Router
 
+modules = {}
+
 class Client(discord.Client):
     def __init__(self):
         super().__init__()
         
         self.config = self.loadJson()
         
-        self.commandPrefix = self.config["commands"]["commandPrefix"]
+        self.prefix = self.config["commands"]["prefix"]
         self.nickname = self.config["client"]["nickname"]
         self.token = self.config["client"]["token"]
 
-        self.router = Router(self, self.commandPrefix)
+        self.router = Router(self, self.prefix)
 
         self.run(self.token)
 
@@ -23,6 +25,15 @@ class Client(discord.Client):
             d = json.load(json_data)
             json_data.close
             return d
+
+    """
+    Register non-text related client modules
+    """
+    def register_modules(self):
+        pass
+
+    def run_modules(self):
+        pass
     
     """
     Async wrapper
@@ -38,12 +49,12 @@ class Client(discord.Client):
     """
     Bot ready event
     """
-    async def on_ready(self):
-        self.change_nickname(self.user.id, self.nickname)
+    def on_ready(self):
         print("bot is ready!")
 
+    """
+    New message event
+    """
     async def on_message(self, message):
         if(message.author != self.user):
             self.router.route(message)
-
-    

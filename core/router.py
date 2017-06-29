@@ -43,7 +43,7 @@ class Router():
                    args=(args, message)).start()
 
     """
-    Register routes from routes.py
+    Register commands from outside of this class
     """
     @classmethod
     def register_command(cls, name, aliases=None, arg_func=lambda args: args):
