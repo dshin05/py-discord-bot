@@ -1,4 +1,4 @@
-import sqlite3
+import sqlite3, threading, queue
 
 class Database():
 
@@ -6,7 +6,19 @@ class Database():
         self.dbfile = dbfile
         self.conn = sqlite3.connect(self.dbfile)
         self.check_table()
-        self.wrapper_test()
+        self.db_queue = queue.Queue()
+
+        t = threading.Thread(target = self.db_queue_worker)
+        t.daemon = True
+        t.start()
+
+    def db_queue_worker(self):
+        conn = sqlite3.connect(self.dbfile)
+        while True:
+            (finish_event, workrequest) = self.db_queue.get()
+            cur = conn.cursor()
+            workrequest(cur)
+            e.set()
 
     def check_table(self):
         c = self.conn.cursor()
@@ -15,12 +27,5 @@ class Database():
         c.execute('CREATE TABLE IF NOT EXISTS remember_tbl (id INTEGER PRIMARY KEY, key text NOT NULL, value text NOT NULL)')
 
         self.conn.commit()
-
-    def wrapper_test(self):
-        c = self.conn.cursor()
-
-        for row in c.execute('SELECT * FROM remember_tbl'):
-            print(row)
-
 
 
